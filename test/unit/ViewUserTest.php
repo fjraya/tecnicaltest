@@ -1,13 +1,13 @@
 <?php
 /**
  * Created by JetBrains PhpStorm.
- * Date: 19/04/16
- * Time: 18:02
+ * User: eyeos
+ * Date: 20/04/16
+ * Time: 13:13
  * To change this template use File | Settings | File Templates.
  */
-require_once  __DIR__."/../../src/model/User.php";
-class UserTest extends PHPUnit_Framework_TestCase
-{
+require_once  __DIR__."/../../src/model/ViewUser.php";
+class ViewUserTest extends PHPUnit_Framework_TestCase{
 
     /**
      * dataProvider constructData
@@ -15,15 +15,10 @@ class UserTest extends PHPUnit_Framework_TestCase
     public function constructData()
     {
         return array(
-            array("", "testPassword", "testRol"),
-            array("testUser", "", "testRol"),
-            array("testUser", "testPassword", ""),
-            array(null, "testPassword", "testRol"),
-            array("testUser", null, "testRol"),
-            array("testUser", "testPassword", null),
-            array("", "", "testRol"),
-            array("testUser", "", ""),
-            array("", "testPassword", ""),
+            array("", "testRol"),
+            array("testUser", ""),
+            array(null, "testRol"),
+            array("testUser", null),
         );
     }
 
@@ -34,9 +29,9 @@ class UserTest extends PHPUnit_Framework_TestCase
    * @dataProvider constructData
     * @expectedException DomainException
    */
-   public function test_construct_calledWithInvalidParams_throw($username, $password, $rol)
+   public function test_construct_calledWithInvalidParams_throw($username, $rol)
    {
-       new User($username, $password, $rol);
+       new ViewUser($username, $rol);
    }
 
    /**
@@ -48,7 +43,7 @@ class UserTest extends PHPUnit_Framework_TestCase
    */
    public function test_construct_calledWithOneInvalidParam_correctMessageInException()
    {
-       new User("testUser", "", "");
+       new ViewUser("testUser", "");
    }
 
     /**
@@ -58,12 +53,8 @@ class UserTest extends PHPUnit_Framework_TestCase
     */
     public function test_construct_calledWithCorrectParams_correctConstruction()
     {
-        $sut = new User("testUser", "testPassword", "testRol");
-        $expected = "user:testUser,rol:testRol,password:testPassword";
+        $sut = new ViewUser("testUser", "testRol");
+        $expected = "user:testUser,rol:testRol";
         $this->assertEquals($expected, $sut->toString());
     }
-
-
-
-
 }
