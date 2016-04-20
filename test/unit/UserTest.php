@@ -64,6 +64,54 @@ class UserTest extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+    * dataProvider getPasswordData
+     * **/
+    public function getPasswordData(){
+        return array(
+            array("aPassword", "aPassword", true),
+            array("aPassword", "noPassword", false)
+        );
+    }
+
+
+    /**
+    * method hasSamePassword
+    * when called
+    * should returnCorrectAnswer
+     * @dataProvider getPasswordData
+    */
+    public function test_hasSamePassword_called_returnCorrectAnswer($sourcePassword, $comparePassword, $expected)
+    {
+        $user = new User("user1", md5($sourcePassword), User::PAGE_3);
+        $actual = $user->hasSamePassword($comparePassword);
+        $this->assertEquals($expected, $actual);
+    }
+
+
+    /**
+    * dataProvider getNullPasswordData
+     * **/
+    public function getNullPasswordData(){
+        return array(
+            array(null), array("")
+        );
+    }
+
+    /**
+    * method hasSamePassword
+    * when calledWithNullPassword
+    * should throw
+     * @dataProvider getNullPasswordData
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Password no puede ser vacío
+    */
+    public function test_hasSamePassword_calledWithNullPassword_throw($password)
+    {
+        $user = new User('username', 'password', User::PAGE_3);
+        $user->hasSamePassword($password);
+    }
+
 
 
 }

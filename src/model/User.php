@@ -30,5 +30,11 @@ class User extends ViewUser
         return parent::toString().",password:".$this->password;
     }
 
+    public function hasSamePassword($password)
+    {
+        if ($password == null) throw new InvalidArgumentException("Password no puede ser vacío");
+        return md5($password) == $this->getPassword();
+    }
+
 
 }

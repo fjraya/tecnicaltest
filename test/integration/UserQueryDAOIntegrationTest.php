@@ -69,10 +69,33 @@ class UserQueryDAOIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $this->generateUsersFixture();
         $actual = $this->sut->readById("username2");
+        $this->assertEquals('user:username2,rol:2', $actual->toString());
+    }
+
+    /**
+    * method readByIdWithPassword
+    * when calledWithNoUsers
+    * should throw
+     * @expectedException DomainException
+    */
+    public function test_readByIdWithPassword_calledWithNoUsers_throw()
+    {
+        $this->sut->readByIdWithPassword("username5");
     }
 
 
 
+    /**
+    * method readByIdWithPassword
+    * when calledWithExistingUserName
+    * should returnCorrectUser
+    */
+    public function test_readByIdWithPassword_calledWithExistingUserName_returnCorrectUser()
+    {
+        $this->generateUsersFixture();
+        $actual = $this->sut->readByIdWithPassword('username2');
+        $this->assertEquals('user:username2,rol:2,password:6cb75f652a9b52798eb6cf2201057c73', $actual->toString());
+    }
 
     private function generateUsersFixture()
     {
