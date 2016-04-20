@@ -1,0 +1,12 @@
+<phpunit
+    backupGlobals="false"
+    verbose="false"
+    strict="false"
+    colors="false"
+    convertNoticesToExceptions="false">
+    <groups>
+        <exclude>
+            <group>manualTests</group>
+        </exclude>
+    </groups>
+</phpunit>
