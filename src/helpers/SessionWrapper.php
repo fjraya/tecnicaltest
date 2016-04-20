@@ -5,24 +5,19 @@
  * Time: 14:50
  * To change this template use File | Settings | File Templates.
  */
-session_start();
+
 require_once __DIR__ . "/ISessionWrapper.php";
 class SessionWrapper implements ISessionWrapper
 {
 
     protected $SESSION_AGE = 300;
-    protected $sessionStorage;
 
-    public function __construct($session = null)
-    {
-        if (!$session) $this->sessionStorage = $_SESSION;
-        else $this->sessionStorage = $session;
-    }
+
 
 
     public function dump() //For test purposes
     {
-        return json_encode($this->sessionStorage);
+        return json_encode($_SESSION);
     }
 
 
@@ -30,8 +25,9 @@ class SessionWrapper implements ISessionWrapper
     {
         $this->checkKeyArgument($key);
         $this->init();
-        $this->sessionStorage[$key] = $value;
+        $_SESSION[$key] = $value;
         $this->manageExpiration();
+        echo var_export($_SESSION, true);
         return $value;
     }
 
@@ -40,9 +36,9 @@ class SessionWrapper implements ISessionWrapper
     {
         $this->checkKeyArgument($key);
         $this->init();
-        if (isset($this->sessionStorage[$key])) {
+        if (isset($_SESSION[$key])) {
             $this->manageExpiration();
-            return $this->sessionStorage[$key];
+            return $_SESSION[$key];
         }
         return false;
     }
@@ -52,24 +48,24 @@ class SessionWrapper implements ISessionWrapper
     {
         $this->checkKeyArgument($key);
         $this->init();
-        unset($this->sessionStorage[$key]);
+        unset($_SESSION[$key]);
         $this->manageExpiration();
     }
 
     protected function manageExpiration()
     {
-        $last = isset($this->sessionStorage['LAST_ACTIVE']) ? $this->sessionStorage['LAST_ACTIVE'] : false;
+        $last = isset($_SESSION['LAST_ACTIVE']) ? $_SESSION['LAST_ACTIVE'] : false;
 
         if ($this->isExpired($last)) {
             $this->destroy();
         }
-        $this->sessionStorage['LAST_ACTIVE'] = time();
+        $_SESSION['LAST_ACTIVE'] = time();
     }
 
 
     public function destroy()
     {
-        $this->sessionStorage = array();
+        $_SESSION = array();
         if ('' !== session_id()) {
             session_destroy();
         }
@@ -78,10 +74,7 @@ class SessionWrapper implements ISessionWrapper
 
     protected function init()
     {
-        if ('' === session_id()) {
-            return session_start();
-        }
-        return session_regenerate_id(true);
+        session_start();
     }
 
     /**

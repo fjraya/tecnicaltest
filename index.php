@@ -5,16 +5,19 @@
  * Time: 17:00
  * To change this template use File | Settings | File Templates.
  */
-
-
+session_start();
+ini_set('session.cookie_secure', '0');
+ini_set('session.use_cookies', '1');
 require 'vendor/autoload.php';
-
+require_once __DIR__ . "/src/controllers/UserController.php";
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/users', 'get_all_users_handler');
+    $r->addRoute('GET', '/page1', 'UserController');
     // {id} must be a number (\d+)
-    $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
+    $r->addRoute('GET', '/page2', 'UserController');
     // The /{title} suffix is optional
-    $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
+    $r->addRoute('GET', '/page3', 'UserController');
+    $r->addRoute('POST', '/login', 'UserController');
+    $r->addRoute('GET', '/logout', 'UserController');
 });
 
 // Fetch method and URI from somewhere
@@ -26,10 +29,6 @@ if (false !== $pos = strpos($uri, '?')) {
     $uri = substr($uri, 0, $pos);
 }
 $uri = rawurldecode($uri);
-echo "SENOS\n";
-echo $httpMethod."\n";
-echo "PEZONES\n";
-echo $uri."\n";
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
@@ -44,7 +43,8 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
-
-        // ... call $handler with $vars
+        $controller = new $handler();
+        $uri = str_replace("/", "", $uri);
+        $controller->$uri();
         break;
 }

@@ -10,7 +10,7 @@ class TssSessionWrapper extends SessionWrapper
 {
     private $expired;
 
-    public function __construct($session, $expired = null)
+    public function __construct($expired = null)
     {
         if (!$expired) $this->expired = false;
         else $this->expired = $expired;
@@ -35,8 +35,8 @@ class SessionWrapperTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $session = array();
-        $this->sut = new TssSessionWrapper($session);
+        $_SESSION = array();
+        $this->sut = new TssSessionWrapper();
     }
 
     /**
@@ -213,18 +213,10 @@ class SessionWrapperTest extends PHPUnit_Framework_TestCase
     */
     public function test_write_calledWithSessionExpired_emptySession()
     {
-        $this->sut = new TssSessionWrapper(array(), true);
+        $this->sut = new TssSessionWrapper(true);
         $this->sut->write("aKey", "aValue");
         $actual = $this->sut->read("aKey");
         $expected = false;
         $this->assertEquals($expected, $actual);
     }
-
-
-
-
-
-
-
-
 }

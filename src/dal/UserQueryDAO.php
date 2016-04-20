@@ -7,7 +7,10 @@
  * To change this template use File | Settings | File Templates.
  */
 require_once __DIR__ . "/IUserQueryDAO.php";
+require_once  __DIR__."/BaseDAO.php";
 require_once __DIR__ . "/../model/ViewUser.php";
+require_once __DIR__ . "/../model/User.php";
+
 class UserQueryDAO extends BaseDAO implements IUserQueryDAO
 {
 

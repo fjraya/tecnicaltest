@@ -1,7 +1,6 @@
 <?php
 /**
  * Created by JetBrains PhpStorm.
- * User: eyeos
  * Date: 20/04/16
  * Time: 13:02
  * To change this template use File | Settings | File Templates.
@@ -12,6 +11,7 @@ class ViewUser
     const PAGE_1 = 1;
     const PAGE_2 = 2;
     const PAGE_3 = 3;
+    const ADMIN = 4;
     private $username;
     private $rol;
 
@@ -41,8 +41,30 @@ class ViewUser
 
     public function toString()
     {
-        return "user:" . $this->username .",rol:" . $this->rol;
+        return "user:" . $this->username . ",rol:" . $this->rol;
     }
+
+
+    public function hasPage1Rol()
+    {
+        return $this->rol == ViewUser::PAGE_1;
+    }
+
+    public function hasPage2Rol()
+    {
+        return $this->rol == ViewUser::PAGE_2;
+    }
+
+    public function hasPage3Rol()
+    {
+        return $this->rol == ViewUser::PAGE_3;
+    }
+
+    public function isAdmin()
+    {
+        return $this->rol == ViewUser::ADMIN;
+    }
+
 
     protected function throwException($fieldName)
     {

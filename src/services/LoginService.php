@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 require_once __DIR__ . "/ILoginService.php";
-require_once __DIR__ . "/../dal/IUserQueryDAO.php";
+require_once __DIR__ . "/../dal/UserQueryDAO.php";
 require_once __DIR__ ."/../helpers/SessionWrapper.php";
 class LoginService implements ILoginService
 {
@@ -15,7 +15,7 @@ class LoginService implements ILoginService
 
     public function __construct(IUserQueryDAO $userQueryDAO = null, ISessionWrapper $sessionWrapper = null)
     {
-        if (!$userQueryDAO) $this->userQueryDAO = new UserQueryDAO("polla");
+        if (!$userQueryDAO) $this->userQueryDAO = new UserQueryDAO("./db/project.sqlite");
         else $this->userQueryDAO = $userQueryDAO;
 
         if (!$sessionWrapper) $this->sessionWrapper = new SessionWrapper();
@@ -30,5 +30,19 @@ class LoginService implements ILoginService
             $this->sessionWrapper->write('rol', $user->getRol());
             return $user;
         } else throw new DomainException("Password inválido");
+    }
+
+    public function logout()
+    {
+        $this->sessionWrapper->destroy();
+    }
+
+
+    public function existUserSession()
+    {
+        $username = $this->sessionWrapper->read("username");
+        $rol = $this->sessionWrapper->read("rol");
+        if ((!$username)||(!$rol)) return false;
+        return new ViewUser($username, $rol);
     }
 }

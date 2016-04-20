@@ -78,6 +78,39 @@ class LoginServiceTest extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * dataProvider getSessionData
+     * **/
+    public function getSessionData()
+    {
+        $map = array(array('username', 'user1'), array('rol', User::PAGE_3));
+        $map2 = array(array('username', 'user1'), array('rol', null));
+        $map3 = array(array('username', null), array('rol', User::PAGE_3));
+        $map4 = array(array('username', null), array('rol', null));
+
+        return array(
+            array($map, new ViewUser('user1', User::PAGE_3)),
+            array($map2, false),
+            array($map3, false),
+            array($map4, false)
+        );
+    }
+
+
+    /**
+     * method existUserSession
+     * when called
+     * should returnCorrectAnswer
+     * @dataProvider getSessionData
+     */
+    public function test_existUserSession_called_returnCorrectAnswer($map, $expected)
+    {
+        $this->sessionWrapper->expects($this->any())->method("read")->will($this->returnValueMap($map));
+        $actual = $this->sut->existUserSession();
+        $this->assertEquals($expected, $actual);
+    }
+
+
     private function configureUserQueryDAOStub()
     {
         $user = new User('username', md5('password'), User::PAGE_3);
