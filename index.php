@@ -15,7 +15,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/login', 'UserController');
     $r->addRoute('POST', '/logout', 'UserController');
     $r->addRoute('POST', '/users', 'ApiRestUserController');
-    $r->addRoute('PUT', '/users/{username}/{roles}[/{password}]', 'ApiRestUserController');
+    $r->addRoute('PUT', '/users/{username}/{roles}/{password}', 'ApiRestUserController');
     $r->addRoute('DELETE', '/users/{username}', 'ApiRestUserController');
     $r->addRoute('GET', '/users', 'ApiRestUserController');
 });
