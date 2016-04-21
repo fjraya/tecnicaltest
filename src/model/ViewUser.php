@@ -26,8 +26,14 @@ class ViewUser
 
     public static function fromArray($items)
     {
-        if (empty($items)) throw new DomainException("No se puede construir un ViewUser con array vacío");
+        if (empty($items)) throw new InvalidArgumentException("No se puede construir un ViewUser con array vacío");
         return new ViewUser($items['username'], explode(",",$items['roles']));
+    }
+
+
+    public function toArray()
+    {
+        return array('username'=>$this->username, 'roles'=>implode(",",$this->roles));
     }
 
     public function getRoles()

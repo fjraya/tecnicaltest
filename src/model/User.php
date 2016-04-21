@@ -25,6 +25,11 @@ class User extends ViewUser
         return $this->password;
     }
 
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
     public function toString()
     {
         return parent::toString().",password:".$this->password;

@@ -9,4 +9,5 @@
 interface ICommandDAO
 {
     public function create($model);
+    public function update($model);
 }

@@ -73,6 +73,45 @@ class ViewUserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $sut->toString());
     }
 
+    /**
+    * method toArray
+    * when called
+    * should returnCorrectArray
+    */
+    public function test_toArray_called_returnCorrectArray()
+    {
+        $sut = new ViewUser("testUser", array(ViewUser::PAGE_1, ViewUser::PAGE_3));
+        $actual = $sut->toArray();
+        $expected = array('username'=>'testUser','roles'=>ViewUser::PAGE_1.",".ViewUser::PAGE_3);
+        $this->assertEquals($expected, $actual);
+    }
+
+
+    /**
+    * method fromArray
+    * when emptyArray
+    * should throw
+     * @expectedException InvalidArgumentException
+    */
+    public function test_fromArray_emptyArray_throw()
+    {
+        ViewUser::fromArray(array());
+    }
+
+
+    /**
+    * method fromArray
+    * when arrayGiven
+    * should correctConstruction
+    */
+    public function test_fromArray_arrayGiven_correctConstruction()
+    {
+        $input = array('username'=>'testUser','roles'=>ViewUser::PAGE_1.",".ViewUser::PAGE_3);
+        $actual = ViewUser::fromArray($input);
+        $expected = 'user:testUser,roles:PAGE_1,PAGE_3';
+        $this->assertEquals($expected, $actual->toString());
+    }
+
 
     /**
      * dataProvider getRolData

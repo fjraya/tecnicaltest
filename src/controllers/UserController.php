@@ -25,28 +25,28 @@ class UserController
 
     }
 
-    public function page1()
+    public function getPage1()
     {
         $pagename = 'page1';
         $this->doAction($pagename, "hasPage1Rol");
     }
 
 
-    public function page2()
+    public function getPage2()
     {
         $pagename = 'page2';
         $this->doAction($pagename, "hasPage2Rol");
     }
 
 
-    public function page3()
+    public function getPage3()
     {
         $pagename = 'page3';
         $this->doAction($pagename, "hasPage3Rol");
     }
 
 
-    public function login($params = null)
+    public function postLogin($params = null)
     {
         if (empty($params)) $params = $_POST;
         $uri = $params['uri'];
@@ -61,7 +61,7 @@ class UserController
         }
     }
 
-    public function logout($params = null)
+    public function postLogout($params = null)
     {
         if (empty($params)) $params = $_POST;
         $uri = $params['uri'];
