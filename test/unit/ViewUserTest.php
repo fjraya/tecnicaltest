@@ -69,7 +69,7 @@ class ViewUserTest extends PHPUnit_Framework_TestCase
     public function test_construct_calledWithCorrectParams_correctConstruction()
     {
         $sut = new ViewUser("testUser", array(ViewUser::PAGE_1, ViewUser::PAGE_3));
-        $expected = "user:testUser,roles:1,3";
+        $expected = "user:testUser,roles:PAGE_1,PAGE_3";
         $this->assertEquals($expected, $sut->toString());
     }
 

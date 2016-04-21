@@ -78,7 +78,7 @@ class UserCommandDAOIntegrationTest extends PHPUnit_Framework_TestCase
         $user->setRoles(array(User::PAGE_3, User::PAGE_1));
         $this->sut->update($user);
         $actual = $this->querySingle();
-        $this->assertEquals(array('username' => 'user1', 'password' => '7c6a180b36896a0a8c02787eeafb0e4c', 'roles' => '3,1'), $actual);
+        $this->assertEquals(array('username' => 'user1', 'password' => '7c6a180b36896a0a8c02787eeafb0e4c', 'roles' => 'PAGE_3,PAGE_1'), $actual);
     }
 
 

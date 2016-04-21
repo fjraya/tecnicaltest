@@ -75,7 +75,7 @@ class UserTest extends PHPUnit_Framework_TestCase
     public function test_construct_calledWithCorrectParams_correctConstruction()
     {
         $sut = new User("testUser", "testPassword", array(ViewUser::PAGE_3, ViewUser::PAGE_1));
-        $expected = "user:testUser,roles:3,1,password:testPassword";
+        $expected = "user:testUser,roles:PAGE_3,PAGE_1,password:testPassword";
         $this->assertEquals($expected, $sut->toString());
     }
 

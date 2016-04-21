@@ -69,7 +69,7 @@ class UserQueryDAOIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $this->generateUsersFixture();
         $actual = $this->sut->readById("username2");
-        $this->assertEquals('user:username2,roles:2,3', $actual->toString());
+        $this->assertEquals('user:username2,roles:PAGE_2,PAGE_3', $actual->toString());
     }
 
     /**
@@ -94,7 +94,7 @@ class UserQueryDAOIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $this->generateUsersFixture();
         $actual = $this->sut->readByIdWithPassword('username2');
-        $this->assertEquals('user:username2,roles:2,3,password:6cb75f652a9b52798eb6cf2201057c73', $actual->toString());
+        $this->assertEquals('user:username2,roles:PAGE_2,PAGE_3,password:6cb75f652a9b52798eb6cf2201057c73', $actual->toString());
     }
 
     private function generateUsersFixture()

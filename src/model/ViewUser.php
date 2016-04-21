@@ -8,10 +8,10 @@
 
 class ViewUser
 {
-    const PAGE_1 = 1;
-    const PAGE_2 = 2;
-    const PAGE_3 = 3;
-    const ADMIN = 4;
+    const PAGE_1 = "PAGE_1";
+    const PAGE_2 = "PAGE_2";
+    const PAGE_3 = "PAGE_3";
+    const ADMIN = "ADMIN";
     private $username;
     private $roles;
 

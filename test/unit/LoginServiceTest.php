@@ -56,7 +56,7 @@ class LoginServiceTest extends PHPUnit_Framework_TestCase
     {
         $this->configureUserQueryDAOStub();
         $result = $this->sut->login('username', 'password');
-        $this->assertEquals("user:username,roles:3,password:5f4dcc3b5aa765d61d8327deb882cf99", $result->toString());
+        $this->assertEquals("user:username,roles:PAGE_3,password:5f4dcc3b5aa765d61d8327deb882cf99", $result->toString());
     }
 
 
