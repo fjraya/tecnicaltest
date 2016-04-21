@@ -16,28 +16,28 @@ class UserQueryDAO extends BaseDAO implements IUserQueryDAO
 
     public function readAll()
     {
-        $sql = "select username, rol from users";
+        $sql = "select username, roles from users";
         list($result, $item) = $this->exerciseQuery($sql);
         $users = array();
         do {
-            $users[] = new ViewUser($item['username'], $item['rol']);
+            $users[] = ViewUser::fromArray($item);
         } while ($item = $result->fetchArray(SQLITE3_ASSOC));
         return $users;
     }
 
     public function readById($id)
     {
-        $sql = "select username, rol from users where username = :username";
-        list($result, $item) = $this->exerciseQuery($sql, new User($id, "dummy", "dummy"));
-        return new ViewUser($item['username'], $item['rol']);
+        $sql = "select username, roles from users where username = :username";
+        list($result, $item) = $this->exerciseQuery($sql, new User($id, "dummy", array(ViewUser::PAGE_1)));
+        return ViewUser::fromArray($item);
     }
 
 
     public function readByIdWithPassword($id)
     {
-        $sql = "select username, rol, password from users where username = :username";
-        list($result, $item) = $this->exerciseQuery($sql, new User($id, "dummy", "dummy"));
-        return new User($item['username'], $item['password'], $item['rol']);
+        $sql = "select username, roles, password from users where username = :username";
+        list($result, $item) = $this->exerciseQuery($sql, new User($id, "dummy", array(1)));
+        return new User($item['username'], $item['password'], explode(",",$item['roles']));
     }
 
 

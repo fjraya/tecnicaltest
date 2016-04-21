@@ -34,7 +34,7 @@ class UserCommandDAOIntegrationTest extends PHPUnit_Framework_TestCase
         $user = $this->getTestUser();
         $this->sut->create($user);
         $actual = $this->querySingle();
-        $this->assertEquals(array('username' => 'user1', 'password' => '7c6a180b36896a0a8c02787eeafb0e4c', 'rol' => User::PAGE_2), $actual);
+        $this->assertEquals(array('username' => 'user1', 'password' => '7c6a180b36896a0a8c02787eeafb0e4c', 'roles' => User::PAGE_2), $actual);
     }
 
 
@@ -75,10 +75,10 @@ class UserCommandDAOIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $user = $this->getTestUser();
         $this->sut->create($user);
-        $user->setRol(User::PAGE_3);
+        $user->setRoles(array(User::PAGE_3, User::PAGE_1));
         $this->sut->update($user);
         $actual = $this->querySingle();
-        $this->assertEquals(array('username' => 'user1', 'password' => '7c6a180b36896a0a8c02787eeafb0e4c', 'rol' => User::PAGE_3), $actual);
+        $this->assertEquals(array('username' => 'user1', 'password' => '7c6a180b36896a0a8c02787eeafb0e4c', 'roles' => '3,1'), $actual);
     }
 
 
@@ -87,7 +87,7 @@ class UserCommandDAOIntegrationTest extends PHPUnit_Framework_TestCase
      */
     private function getTestUser()
     {
-        $user = new User("user1", "password1", User::PAGE_2);
+        $user = new User("user1", "password1", array(User::PAGE_2));
         return $user;
     }
 

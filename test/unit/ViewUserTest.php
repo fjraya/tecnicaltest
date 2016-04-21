@@ -40,12 +40,26 @@ class ViewUserTest extends PHPUnit_Framework_TestCase
      * when calledWithOneInvalidParam
      * should correctMessageInException
      * @expectedException DomainException
-     * @expectedExceptionMessage El rol no puede estar vacío
+     * @expectedExceptionMessage El roles no puede estar vacío
      */
     public function test_construct_calledWithOneInvalidParam_correctMessageInException()
     {
         new ViewUser("testUser", "");
     }
+
+
+    /**
+      * method construct
+      * when calledWithInvalidFormatInRoles
+      * should throw
+       * @expectedException InvalidArgumentException
+       * @expectedExceptionMessage Roles debe ser un array
+      */
+      public function test_construct_calledWithInvalidFormatInRoles_throw()
+      {
+          new ViewUser("username", 1);
+      }
+
 
     /**
      * method construct
@@ -54,8 +68,8 @@ class ViewUserTest extends PHPUnit_Framework_TestCase
      */
     public function test_construct_calledWithCorrectParams_correctConstruction()
     {
-        $sut = new ViewUser("testUser", "testRol");
-        $expected = "user:testUser,rol:testRol";
+        $sut = new ViewUser("testUser", array(ViewUser::PAGE_1, ViewUser::PAGE_3));
+        $expected = "user:testUser,roles:1,3";
         $this->assertEquals($expected, $sut->toString());
     }
 
@@ -66,22 +80,22 @@ class ViewUserTest extends PHPUnit_Framework_TestCase
     public function getRolData()
     {
         return array(
-            array("hasPage1Rol", new ViewUser('user1', ViewUser::PAGE_1), true),
-            array("hasPage1Rol", new ViewUser('user1', ViewUser::PAGE_2), false),
-            array("hasPage1Rol", new ViewUser('user1', ViewUser::PAGE_3), false),
-            array("hasPage1Rol", new ViewUser('user1', ViewUser::ADMIN), false),
-            array("hasPage2Rol", new ViewUser('user1', ViewUser::PAGE_1), false),
-            array("hasPage2Rol", new ViewUser('user1', ViewUser::PAGE_2), true),
-            array("hasPage2Rol", new ViewUser('user1', ViewUser::PAGE_3), false),
-            array("hasPage2Rol", new ViewUser('user1', ViewUser::ADMIN), false),
-            array("hasPage3Rol", new ViewUser('user1', ViewUser::PAGE_1), false),
-            array("hasPage3Rol", new ViewUser('user1', ViewUser::PAGE_2), false),
-            array("hasPage3Rol", new ViewUser('user1', ViewUser::PAGE_3), true),
-            array("hasPage3Rol", new ViewUser('user1', ViewUser::ADMIN), false),
-            array("isAdmin", new ViewUser('user1', ViewUser::ADMIN), true),
-            array("isAdmin", new ViewUser('user1', ViewUser::PAGE_1), false),
-            array("isAdmin", new ViewUser('user1', ViewUser::PAGE_2), false),
-            array("isAdmin", new ViewUser('user1', ViewUser::PAGE_3), false),
+            array("hasPage1Rol", new ViewUser('user1', array(ViewUser::PAGE_1)), true),
+            array("hasPage1Rol", new ViewUser('user1', array(ViewUser::PAGE_2)), false),
+            array("hasPage1Rol", new ViewUser('user1', array(ViewUser::PAGE_3)), false),
+            array("hasPage1Rol", new ViewUser('user1', array(ViewUser::ADMIN)), false),
+            array("hasPage2Rol", new ViewUser('user1', array(ViewUser::PAGE_1)), false),
+            array("hasPage2Rol", new ViewUser('user1', array(ViewUser::PAGE_2)), true),
+            array("hasPage2Rol", new ViewUser('user1', array(ViewUser::PAGE_3)), false),
+            array("hasPage2Rol", new ViewUser('user1', array(ViewUser::ADMIN)), false),
+            array("hasPage3Rol", new ViewUser('user1', array(ViewUser::PAGE_1)), false),
+            array("hasPage3Rol", new ViewUser('user1', array(ViewUser::PAGE_2)), false),
+            array("hasPage3Rol", new ViewUser('user1', array(ViewUser::PAGE_3)), true),
+            array("hasPage3Rol", new ViewUser('user1', array(ViewUser::ADMIN)), false),
+            array("isAdmin", new ViewUser('user1', array(ViewUser::ADMIN)), true),
+            array("isAdmin", new ViewUser('user1', array(ViewUser::PAGE_1)), false),
+            array("isAdmin", new ViewUser('user1', array(ViewUser::PAGE_2)), false),
+            array("isAdmin", new ViewUser('user1', array(ViewUser::PAGE_3)), false),
         );
     }
 

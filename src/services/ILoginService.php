@@ -9,5 +9,6 @@
 interface ILoginService
 {
     public function login($username, $password);
+    public function logout();
     public function existUserSession();
 }

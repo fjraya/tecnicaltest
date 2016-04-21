@@ -28,10 +28,11 @@ class BaseDAO
     public function doCommand($sql, $model = null)
     {
         $sentence = $this->sqlite->prepare($sql);
+
         if ($model) {
             $sentence->bindValue(':username', $model->getUsername(), SQLITE3_TEXT);
             $sentence->bindValue(':password', md5($model->getPassword()), SQLITE3_TEXT);
-            $sentence->bindValue(':rol', $model->getRol(), SQLITE3_INTEGER);
+            $sentence->bindValue(':rol', implode(",",$model->getRoles()), SQLITE3_TEXT);
         }
         try {
             $result = $sentence->execute();

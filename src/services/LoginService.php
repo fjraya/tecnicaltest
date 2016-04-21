@@ -24,10 +24,11 @@ class LoginService implements ILoginService
 
     public function login($username, $password)
     {
+        if ((!$username)||(!$password)) throw new InvalidArgumentException("Parametros incorrectos");
         $user = $this->userQueryDAO->readByIdWithPassword($username);
         if ($user->hasSamePassword($password)) {
             $this->sessionWrapper->write('username', $user->getUsername());
-            $this->sessionWrapper->write('rol', $user->getRol());
+            $this->sessionWrapper->write('roles', $user->getRoles());
             return $user;
         } else throw new DomainException("Password inválido");
     }
@@ -41,8 +42,8 @@ class LoginService implements ILoginService
     public function existUserSession()
     {
         $username = $this->sessionWrapper->read("username");
-        $rol = $this->sessionWrapper->read("rol");
-        if ((!$username)||(!$rol)) return false;
-        return new ViewUser($username, $rol);
+        $roles = $this->sessionWrapper->read("roles");
+        if ((!$username)||(empty($roles))) return false;
+        return new ViewUser($username, $roles);
     }
 }

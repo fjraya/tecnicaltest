@@ -16,10 +16,10 @@ class UserTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array("", "testPassword", "testRol"),
-            array("testUser", "", "testRol"),
+            array("testUser", "", array(1)),
             array("testUser", "testPassword", ""),
             array(null, "testPassword", "testRol"),
-            array("testUser", null, "testRol"),
+            array("testUser", null, array(1)),
             array("testUser", "testPassword", null),
             array("", "", "testRol"),
             array("testUser", "", ""),
@@ -39,12 +39,28 @@ class UserTest extends PHPUnit_Framework_TestCase
        new User($username, $password, $rol);
    }
 
+
+
+   /**
+   * method construct
+   * when calledWithInvalidFormatInRoles
+   * should throw
+    * @expectedException InvalidArgumentException
+    * @expectedExceptionMessage Roles debe ser un array
+   */
+   public function test_construct_calledWithInvalidFormatInRoles_throw()
+   {
+       new User("username", "password", 1);
+   }
+
+
+
    /**
    * method construct
    * when calledWithOneInvalidParam
    * should correctMessageInException
     * @expectedException DomainException
-    * @expectedExceptionMessage El rol no puede estar vacío
+    * @expectedExceptionMessage El roles no puede estar vacío
    */
    public function test_construct_calledWithOneInvalidParam_correctMessageInException()
    {
@@ -58,8 +74,8 @@ class UserTest extends PHPUnit_Framework_TestCase
     */
     public function test_construct_calledWithCorrectParams_correctConstruction()
     {
-        $sut = new User("testUser", "testPassword", "testRol");
-        $expected = "user:testUser,rol:testRol,password:testPassword";
+        $sut = new User("testUser", "testPassword", array(ViewUser::PAGE_3, ViewUser::PAGE_1));
+        $expected = "user:testUser,roles:3,1,password:testPassword";
         $this->assertEquals($expected, $sut->toString());
     }
 
@@ -83,7 +99,7 @@ class UserTest extends PHPUnit_Framework_TestCase
     */
     public function test_hasSamePassword_called_returnCorrectAnswer($sourcePassword, $comparePassword, $expected)
     {
-        $user = new User("user1", md5($sourcePassword), User::PAGE_3);
+        $user = new User("user1", md5($sourcePassword), array(User::PAGE_3));
         $actual = $user->hasSamePassword($comparePassword);
         $this->assertEquals($expected, $actual);
     }
@@ -108,7 +124,7 @@ class UserTest extends PHPUnit_Framework_TestCase
     */
     public function test_hasSamePassword_calledWithNullPassword_throw($password)
     {
-        $user = new User('username', 'password', User::PAGE_3);
+        $user = new User('username', 'password', array(User::PAGE_3));
         $user->hasSamePassword($password);
     }
 

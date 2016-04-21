@@ -16,4 +16,11 @@ class View
         $renderedView = ob_get_clean();
         return $renderedView;
     }
+
+
+
+    public function redirect($uri)
+    {
+        header("Location: " . $uri);
+    }
 }

@@ -27,7 +27,6 @@ class SessionWrapper implements ISessionWrapper
         $this->init();
         $_SESSION[$key] = $value;
         $this->manageExpiration();
-        echo var_export($_SESSION, true);
         return $value;
     }
 

@@ -17,7 +17,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     // The /{title} suffix is optional
     $r->addRoute('GET', '/page3', 'UserController');
     $r->addRoute('POST', '/login', 'UserController');
-    $r->addRoute('GET', '/logout', 'UserController');
+    $r->addRoute('POST', '/logout', 'UserController');
 });
 
 // Fetch method and URI from somewhere

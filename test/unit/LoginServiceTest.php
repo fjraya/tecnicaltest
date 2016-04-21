@@ -56,7 +56,7 @@ class LoginServiceTest extends PHPUnit_Framework_TestCase
     {
         $this->configureUserQueryDAOStub();
         $result = $this->sut->login('username', 'password');
-        $this->assertEquals("user:username,rol:3,password:5f4dcc3b5aa765d61d8327deb882cf99", $result->toString());
+        $this->assertEquals("user:username,roles:3,password:5f4dcc3b5aa765d61d8327deb882cf99", $result->toString());
     }
 
 
@@ -73,9 +73,38 @@ class LoginServiceTest extends PHPUnit_Framework_TestCase
             ->with('username', 'username');
         $this->sessionWrapper->expects($this->at(1))
             ->method('write')
-            ->with('rol', User::PAGE_3);
+            ->with('roles', array(User::PAGE_3));
         $this->sut->login('username', 'password');
     }
+
+
+    /**
+    * dataProvider getInvalidParamsData
+     * **/
+    public function getInvalidParamsData(){
+        return array(
+            array(null, "pass"),
+            array("", "pass"),
+            array("", ""),
+            array(null, ""),
+            array(null, null),
+            array("user", ""),
+            array("user", null),
+        );
+    }
+
+    /**
+    * method login
+    * when calledWithInvalidParams
+    * should throw
+     * @dataProvider getInvalidParamsData
+     * @expectedException InvalidArgumentException
+    */
+    public function test_login_calledWithInvalidParams_throw($username, $password)
+    {
+        $this->sut->login($username, $password);
+    }
+
 
 
     /**
@@ -83,13 +112,13 @@ class LoginServiceTest extends PHPUnit_Framework_TestCase
      * **/
     public function getSessionData()
     {
-        $map = array(array('username', 'user1'), array('rol', User::PAGE_3));
-        $map2 = array(array('username', 'user1'), array('rol', null));
-        $map3 = array(array('username', null), array('rol', User::PAGE_3));
-        $map4 = array(array('username', null), array('rol', null));
+        $map = array(array('username', 'user1'), array('roles', array(User::PAGE_3)));
+        $map2 = array(array('username', 'user1'), array('roles', null));
+        $map3 = array(array('username', null), array('roles', array(User::PAGE_3)));
+        $map4 = array(array('username', null), array('roles', null));
 
         return array(
-            array($map, new ViewUser('user1', User::PAGE_3)),
+            array($map, new ViewUser('user1', array(User::PAGE_3))),
             array($map2, false),
             array($map3, false),
             array($map4, false)
@@ -111,9 +140,24 @@ class LoginServiceTest extends PHPUnit_Framework_TestCase
     }
 
 
+
+    /**
+    * method logout
+    * when called
+    * should correctCallToInnerSessionWrapper
+    */
+    public function test_logout_called_correctCallToInnerSessionWrapper()
+    {
+        $this->sessionWrapper->expects($this->once())->method("destroy");
+        $this->sut->logout();
+    }
+
+
+
+
     private function configureUserQueryDAOStub()
     {
-        $user = new User('username', md5('password'), User::PAGE_3);
+        $user = new User('username', md5('password'), array(User::PAGE_3));
         $this->userQueryDAOStub->expects($this->any())->method("readByIdWithPassword")->will($this->returnValue($user));
     }
 

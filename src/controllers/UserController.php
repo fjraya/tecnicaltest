@@ -48,21 +48,25 @@ class UserController
 
     public function login($params = null)
     {
-        if (!$params) $params = $_POST;
+        if (empty($params)) $params = $_POST;
+        $uri = $params['uri'];
         try {
             $this->loginService->login($params['username'], $params['password']);
-            header("Location: ".$params['uri']);
+            $this->view->redirect($uri);
+        } catch (DomainException $e) {
+            echo $this->view->render("login", array("errorMsg" => 'login incorrecto', 'uri' => $uri));
         }
-        catch(DomainException $e)
-        {
-            echo $this->view->render("login", array("errorMsg"=>'login incorrecto', 'uri'=>$params['uri']));
+        catch (InvalidArgumentException $e) {
+            echo $this->view->render("login", array("errorMsg" => "username o password no pueden ser nulos", 'uri' => $uri));
         }
     }
 
-    public function logout()
+    public function logout($params = null)
     {
+        if (empty($params)) $params = $_POST;
+        $uri = $params['uri'];
         $this->loginService->logout();
-
+        $this->view->redirect($uri);
     }
 
 
@@ -73,13 +77,13 @@ class UserController
     {
 
         if ($user = $this->loginService->existUserSession()) {
-            if (($user->isAdmin())||($user->$rolCheckMethod())) {
+            if (($user->isAdmin()) || ($user->$rolCheckMethod())) {
                 echo $this->view->render("welcome", array('pagename' => $pagename, 'username' => $user->getUsername()));
             } else {
-                echo $this->view->render("forbidden");
+                echo $this->view->render("forbidden", array('uri' => "/" . $pagename));
             }
         } else {
-            echo $this->view->render("login", array("uri" => "/".$pagename, 'errorMsg'=>null));
+            echo $this->view->render("login", array("uri" => "/" . $pagename, 'errorMsg' => null));
         }
     }
 

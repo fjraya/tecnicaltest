@@ -13,19 +13,26 @@ class ViewUser
     const PAGE_3 = 3;
     const ADMIN = 4;
     private $username;
-    private $rol;
+    private $roles;
 
-    public function __construct($username, $rol)
+    public function __construct($username, $roles)
     {
         if (!$username) $this->throwException("username");
-        if (!$rol) $this->throwException("rol");
+        if (empty($roles)) $this->throwException("roles");
+        if (!is_array($roles)) throw new InvalidArgumentException("Roles debe ser un array");
         $this->username = $username;
-        $this->rol = $rol;
+        $this->roles = $roles;
     }
 
-    public function getRol()
+    public static function fromArray($items)
     {
-        return $this->rol;
+        if (empty($items)) throw new DomainException("No se puede construir un ViewUser con array vacío");
+        return new ViewUser($items['username'], explode(",",$items['roles']));
+    }
+
+    public function getRoles()
+    {
+        return $this->roles;
     }
 
     public function getUsername()
@@ -33,36 +40,39 @@ class ViewUser
         return $this->username;
     }
 
-    public function setRol($rol)
+    public function setRoles($roles)
     {
-        $this->rol = $rol;
+        $this->roles = $roles;
     }
 
 
     public function toString()
     {
-        return "user:" . $this->username . ",rol:" . $this->rol;
+        $roles = implode(",", $this->roles);
+        return "user:" . $this->username . ",roles:" . $roles;
     }
 
 
     public function hasPage1Rol()
     {
-        return $this->rol == ViewUser::PAGE_1;
+
+        return in_array(ViewUser::PAGE_1, $this->roles);
     }
 
     public function hasPage2Rol()
     {
-        return $this->rol == ViewUser::PAGE_2;
+        return in_array(ViewUser::PAGE_2, $this->roles);
     }
 
     public function hasPage3Rol()
     {
-        return $this->rol == ViewUser::PAGE_3;
+        return in_array(ViewUser::PAGE_3, $this->roles);
     }
 
     public function isAdmin()
     {
-        return $this->rol == ViewUser::ADMIN;
+        if (count($this->roles) > 1) return false;
+        return in_array(ViewUser::ADMIN, $this->roles);
     }
 
 

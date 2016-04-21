@@ -69,7 +69,7 @@ class UserQueryDAOIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $this->generateUsersFixture();
         $actual = $this->sut->readById("username2");
-        $this->assertEquals('user:username2,rol:2', $actual->toString());
+        $this->assertEquals('user:username2,roles:2,3', $actual->toString());
     }
 
     /**
@@ -94,14 +94,14 @@ class UserQueryDAOIntegrationTest extends PHPUnit_Framework_TestCase
     {
         $this->generateUsersFixture();
         $actual = $this->sut->readByIdWithPassword('username2');
-        $this->assertEquals('user:username2,rol:2,password:6cb75f652a9b52798eb6cf2201057c73', $actual->toString());
+        $this->assertEquals('user:username2,roles:2,3,password:6cb75f652a9b52798eb6cf2201057c73', $actual->toString());
     }
 
     private function generateUsersFixture()
     {
-        $user1 = new User("username1", "password1", User::PAGE_3);
-        $user2 = new User("username2", "password2", User::PAGE_2);
-        $user3 = new User("username3", "password3", User::PAGE_1);
+        $user1 = new User("username1", "password1", array(User::PAGE_3));
+        $user2 = new User("username2", "password2", array(User::PAGE_2, User::PAGE_3));
+        $user3 = new User("username3", "password3", array(User::PAGE_1));
         $this->command->create($user1);
         $this->command->create($user2);
         $this->command->create($user3);
