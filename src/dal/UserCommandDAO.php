@@ -31,4 +31,11 @@ class UserCommandDAO extends BaseDAO implements ICommandDAO
     }
 
 
+    public function delete($model)
+    {
+        $sql = 'DELETE FROM Users where username = :username';
+        return $this->doCommand($sql, $model);
+    }
+
+
 }

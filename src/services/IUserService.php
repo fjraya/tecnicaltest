@@ -12,4 +12,5 @@ interface IUserService
     public function listUsersByUser($user);
     public function createUser($user, $inputUser);
     public function updateUser($user, $username, $password, $roles);
+    public function deleteUser($user, $username);
 }

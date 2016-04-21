@@ -65,6 +65,34 @@ class UserCommandDAOIntegrationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $actual);
     }
 
+    /**
+    * method delete
+    * when userNotExists
+    * should nothingHappens
+    */
+    public function test_delete_userNotExists_nothingHappens()
+    {
+        $user = $this->getTestUser();
+        $this->sut->delete($user);
+    }
+
+    /**
+    * method delete
+    * when userExist
+    * should correctDeletion
+    */
+    public function test_delete_userExist_correctDeletion()
+    {
+        $user = $this->getTestUser();
+        $this->sut->create($user);
+        $actual = $this->querySingle("select count(*) as num from users where username='user1'");
+        $this->assertEquals(1, $actual['num']);
+        $this->sut->delete($user);
+        $actual = $this->querySingle("select count(*) as num from users where username='user1'");
+        $this->assertEquals(0, $actual['num']);
+    }
+
+
 
     /**
      * method update
@@ -96,9 +124,10 @@ class UserCommandDAOIntegrationTest extends PHPUnit_Framework_TestCase
      * @param $stmt
      * @return mixed
      */
-    private function querySingle()
+    private function querySingle($sql = null)
     {
-        $actual = $this->stmt->querySingle("select * from users where username='user1'", true);
+        if (!$sql) $sql = "select * from users where username='user1'";
+        $actual = $this->stmt->querySingle($sql, true);
         return $actual;
     }
 

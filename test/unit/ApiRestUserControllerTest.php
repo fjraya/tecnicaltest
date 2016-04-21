@@ -190,6 +190,47 @@ class ApiRestUserControllerTest extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * method deleteUsers
+     * when called
+     * should correctCallToUserService
+     */
+    public function test_deleteUsers_called_correctCallToUserService()
+    {
+        $this->configureVars();
+        $this->userServiceDouble->expects($this->once())->method("deleteUser")->with($this->user, 'user1');
+        $this->sut->deleteUsers();
+    }
+
+
+    /**
+     * method deleteUsers
+     * when called
+     * should correctResponse
+     */
+    public function test_deleteUsers_called_correctResponse()
+    {
+        $this->configureVars();
+        $this->userServiceDouble->method("deleteUser");
+        $expected = 'HTTP/1.0 200 OK|{"status":"200 OK","message":"usuario borrado correctamente"}';
+        $this->exerciseDeleteUsersAndVerify($expected);
+    }
+
+
+    /**
+     * method deleteUsers
+     * when calledWithError
+     * should correctResponse
+     */
+    public function test_deleteUsers_calledWithError_correctResponse()
+    {
+        $this->configureVars();
+        $this->userServiceDouble->method("deleteUser")->will($this->throwException(new DomainException("a exception")));
+        $expected = 'HTTP/1.0 403 Forbidden|{"status":"403 Forbidden","message":"a exception"}';
+        $this->exerciseDeleteUsersAndVerify($expected);
+    }
+
+
     private function configureVars()
     {
         $this->vars['username'] = 'user1';
@@ -204,8 +245,7 @@ class ApiRestUserControllerTest extends PHPUnit_Framework_TestCase
     private function exercisePostUsersAndVerify($expected)
     {
         $this->sut->postUsers();
-        $actual = $this->sut->getActual();
-        $this->assertEquals($expected, $actual);
+        $this->verify($expected);
     }
 
 
@@ -215,8 +255,25 @@ class ApiRestUserControllerTest extends PHPUnit_Framework_TestCase
     private function exercisePutUsersAndVerify($expected)
     {
         $this->sut->putUsers();
+        $this->verify($expected);
+    }
+
+
+    /**
+     * @param $expected
+     */
+    private function exerciseDeleteUsersAndVerify($expected)
+    {
+        $this->sut->deleteUsers();
+        $this->verify($expected);
+    }
+
+    /**
+     * @param $expected
+     */
+    private function verify($expected)
+    {
         $actual = $this->sut->getActual();
         $this->assertEquals($expected, $actual);
     }
-
 }

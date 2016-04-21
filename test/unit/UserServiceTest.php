@@ -110,14 +110,13 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     }
 
 
-
     /**
-    * method createUser
-    * when calledWithExistentUserWithSameUsername
-    * should throw
+     * method createUser
+     * when calledWithExistentUserWithSameUsername
+     * should throw
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage user con username u2 ya existe
-    */
+     */
     public function test_createUser_calledWithExistentUserWithSameUsername_throw()
     {
         $testUser = new ViewUser('user2', array(ViewUser::ADMIN));
@@ -127,12 +126,12 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 
 
     /**
-    * method createUser
-    * when calledWithNoAdmin
-    * should throw
+     * method createUser
+     * when calledWithNoAdmin
+     * should throw
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage No tiene permisos de admin para crear usuarios
-    */
+     */
     public function test_createUser_calledWithNoAdmin_throw()
     {
         $testUser = new ViewUser('user2', array(ViewUser::PAGE_1));
@@ -141,10 +140,10 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 
 
     /**
-    * method createUser
-    * when calledWithAdminAndNoExistUserWithSameUsername
-    * should correctCallToCreation
-    */
+     * method createUser
+     * when calledWithAdminAndNoExistUserWithSameUsername
+     * should correctCallToCreation
+     */
     public function test_createUser_calledWithAdminAndNoExistUserWithSameUsername_correctCallToCreation()
     {
         $testUser = new ViewUser('user2', array(ViewUser::ADMIN));
@@ -156,12 +155,12 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 
 
     /**
-    * method updateUser
-    * when calledWithNoAdmin
-    * should throw
+     * method updateUser
+     * when calledWithNoAdmin
+     * should throw
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage No tiene permisos de admin para modificar usuarios
-    */
+     */
     public function test_updateUser_calledWithNoAdmin_throw()
     {
         $testUser = new ViewUser('user2', array(ViewUser::PAGE_1));
@@ -169,11 +168,11 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-    * method updateUser
-    * when userNotExists
-    * should throw
+     * method updateUser
+     * when userNotExists
+     * should throw
      * @expectedException DomainException
-    */
+     */
     public function test_updateUser_userNotExists_throw()
     {
         $testUser = new ViewUser('user2', array(ViewUser::ADMIN));
@@ -183,19 +182,57 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 
 
     /**
-    * method updateUser
-    * when userExistsAndAdminTryToUpdate
-    * should correctUpdate
-    */
+     * method deleteUser
+     * when userNotExists
+     * should throw
+     * @expectedException DomainException
+     */
+    public function test_deleteUser_userNotExists_throw()
+    {
+        $testUser = new ViewUser('user2', array(ViewUser::ADMIN));
+        $this->userQueryDAODouble->method("readByIdWithPassword")->will($this->throwException(new DomainException()));
+        $this->sut->deleteUser($testUser, "user");
+    }
+
+    /**
+     * method deleteUser
+     * when calledWithNoAdmin
+     * should throw
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage No tiene permisos de admin para borrar usuarios
+     */
+    public function test_deleteUser_calledWithNoAdmin_throw()
+    {
+        $testUser = new ViewUser('user2', array(ViewUser::PAGE_1));
+        $this->sut->deleteUser($testUser, "user");
+    }
+
+    /**
+     * method deleteUser
+     * when userExistsAndAdminTryToDelete
+     * should correctDelete
+     */
+    public function test_deleteUser_userExistsAndAdminTryToDelete_correctDelete()
+    {
+        $testUser = new ViewUser('user2', array(ViewUser::ADMIN));
+        $this->userQueryDAODouble->method("readByIdWithPassword")->will($this->returnValue(new User("u2", 'pass4', array(ViewUser::PAGE_2))));
+        $this->userCommandDAODouble->expects($this->once())->method("delete")->with(new User("u2", 'pass4', array(ViewUser::PAGE_2)));
+        $this->sut->deleteUser($testUser, 'u2');
+    }
+
+
+    /**
+     * method updateUser
+     * when userExistsAndAdminTryToUpdate
+     * should correctUpdate
+     */
     public function test_updateUser_userExistsAndAdminTryToUpdate_correctUpdate()
     {
         $testUser = new ViewUser('user2', array(ViewUser::ADMIN));
         $this->userQueryDAODouble->method("readByIdWithPassword")->will($this->returnValue(new User("u2", 'pass4', array(ViewUser::PAGE_2))));
         $this->userCommandDAODouble->expects($this->once())->method("update")->with(new User("u2", 'pass4', array(ViewUser::PAGE_1, ViewUser::PAGE_2)));
-        $this->sut->updateUser($testUser, 'u2', null, ViewUser::PAGE_1.",".ViewUser::PAGE_2);
+        $this->sut->updateUser($testUser, 'u2', null, ViewUser::PAGE_1 . "," . ViewUser::PAGE_2);
     }
-
-
 
 
     private function serialize($items)

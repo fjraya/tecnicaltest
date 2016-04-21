@@ -71,6 +71,21 @@ class ApiRestUserController
     }
 
 
+    public function deleteUsers()
+    {
+        $result = array('status' => '200 OK', 'message' => 'usuario borrado correctamente');
+        $header = "HTTP/1.0 200 OK";
+        try {
+            $this->userService->deleteUser($this->user, $this->vars['username']);
+
+        } catch (Exception $e) {
+            $result = array('status' => '403 Forbidden', 'message' => $e->getMessage());
+            $header = 'HTTP/1.0 403 Forbidden';
+        }
+        $this->response($header, $result);
+    }
+
+
     public function putUsers()
     {
         $result = array('status' => '201 Created', 'message' => 'usuario modificado correctamente');
@@ -105,19 +120,19 @@ class ApiRestUserController
      */
     private function doLogin($vars)
     {
-        
+
         $username = $vars['auth_username'];
         $password = $vars['auth_password'];
         try {
             $user = $this->loginService->login($username, $password);
             return $user;
         } catch (DomainException $e) {
-            $message = array('status'=>'403 Forbidden', 'message' => "login incorrecto");
-            $this->response('HTTP/1.0 403 Forbidden',$message);
+            $message = array('status' => '403 Forbidden', 'message' => "login incorrecto");
+            $this->response('HTTP/1.0 403 Forbidden', $message);
         }
         catch (InvalidArgumentException $e) {
-            $message = array('status'=>'403 Forbidden', 'message' => "se requiere un user y un password");
-            $this->response('HTTP/1.0 403 Forbidden',$message);
+            $message = array('status' => '403 Forbidden', 'message' => "se requiere un user y un password");
+            $this->response('HTTP/1.0 403 Forbidden', $message);
         }
     }
 
@@ -125,14 +140,14 @@ class ApiRestUserController
     protected function response($head, $message)
     {
         header($head);
-        header("Content-Type: application/".$this->parser->getName());
+        header("Content-Type: application/" . $this->parser->getName());
         echo $this->parser->parse($message);
         die();
     }
 
     public function getName()
     {
-        return "apiRest|".$this->parser->getName();
+        return "apiRest|" . $this->parser->getName();
     }
 
 
