@@ -23,7 +23,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
-$uri = rawurldecode($uri);
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 $contentNegotiation = $_SERVER['HTTP_ACCEPT'];
 $parser = $contentNegotiation == "application/xml"?new XMLParser():new JSONParser();
@@ -47,7 +46,6 @@ switch ($routeInfo[0]) {
         $auth = $_SERVER['HTTP_AUTHORIZATION'];
         $auth = explode(" ", $auth);
 
-
         if ($auth[0] == "Basic") {
             $credentials = explode(":",base64_decode($auth[1]));
             $vars['auth_username'] = $credentials[0];
@@ -55,8 +53,8 @@ switch ($routeInfo[0]) {
         }
 
         $uri = preg_replace("[^/]", "", $uri);
-        $elems = explode("/", $uri);
-        $method = strtolower($httpMethod).ucfirst($elems[0]);
+        $elemsUri = explode("/", $uri);
+        $method = strtolower($httpMethod).ucfirst($elemsUri[0]);
         $vars = array_merge($vars, $_POST);
         $controller = ControllerLocator::getInstance($handler, $contentNegotiation, $vars);
         $controller->$method();
