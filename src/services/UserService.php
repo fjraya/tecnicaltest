@@ -50,9 +50,11 @@ class UserService implements IUserService
     public function updateUser($user, $username, $password, $roles)
     {
         if ($user->isAdmin()) {
+
             $user = $this->userQueryDAO->readByIdWithPassword($username);
             if ($password) $user->setPassword($password);
             if ($roles) $user->setRoles(explode(",", $roles));
+
             $this->userCommandDAO->update($user);
         } else throw new InvalidArgumentException("No tiene permisos de admin para modificar usuarios");
     }

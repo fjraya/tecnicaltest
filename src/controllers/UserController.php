@@ -88,4 +88,9 @@ class UserController
     }
 
 
+    public function getName()
+    {
+        return "userController";
+    }
+
 }

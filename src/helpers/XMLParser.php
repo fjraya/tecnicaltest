@@ -10,6 +10,11 @@
 class XMLParser implements IParser
 {
 
+    public function getName()
+    {
+        return "xml";
+    }
+
     private function write_xml( XMLWriter $xml, $data ) {
         foreach( $data as $key => $value ) {
             if( is_array( $value )) {

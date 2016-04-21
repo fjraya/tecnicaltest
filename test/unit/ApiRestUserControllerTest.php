@@ -14,7 +14,8 @@ class TssApiRestUserController extends ApiRestUserController
 
     protected function response($header, $message)
     {
-        $this->spy = $header . "|" . json_encode($message);
+
+        $this->spy = $header . "|" . $this->parser->parse($message);
     }
 
     public function getActual()
@@ -26,10 +27,11 @@ class TssApiRestUserController extends ApiRestUserController
 class ApiRestUserControllerTest extends PHPUnit_Framework_TestCase
 {
     private $userServiceDouble;
-    private $parserDouble;
+
     private $loginServiceDouble;
     private $sut;
     private $user;
+    private $vars;
 
     /**
      * @param $expected
@@ -43,13 +45,13 @@ class ApiRestUserControllerTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+
         $this->vars = array('auth_username' => 'user', 'auth_password' => 'pass');
         $this->userServiceDouble = $this->getMock("IUserService");
-        $this->parserDouble = $this->getMock("IParser");
         $this->loginServiceDouble = $this->getMock("ILoginService");
         $this->user = new ViewUser('user', array(ViewUser::ADMIN));
         $this->loginServiceDouble->method("login")->will($this->returnValue($this->user));
-        $this->sut = new TssApiRestUserController($this->vars, $this->loginServiceDouble, $this->userServiceDouble, $this->parserDouble);
+        $this->sut = new TssApiRestUserController($this->vars, $this->loginServiceDouble, $this->userServiceDouble, new JSONParser());
     }
 
 
@@ -76,6 +78,22 @@ class ApiRestUserControllerTest extends PHPUnit_Framework_TestCase
         $expected = 'HTTP/1.0 200 OK|{"status":"200 OK","data":{"user1":{"username":"u1","roles":"PAGE_1"},"user2":{"username":"u2","roles":"PAGE_2"}}}';
         $this->exerciseGetUsersAndVerify($expected);
     }
+
+
+    /**
+     * method getUsers
+     * when calledWithXmlParser
+     * should correctResponse
+     */
+    public function test_getUsers_calledWithXmlParser_correctResponse()
+    {
+        $this->vars = array('auth_username' => 'user', 'auth_password' => 'pass');
+        $this->sut = new TssApiRestUserController($this->vars, $this->loginServiceDouble, $this->userServiceDouble, new XMLParser());
+        $this->userServiceDouble->expects($this->once())->method("listUsersByUser")->will($this->returnValue(array(new ViewUser('u1', array(ViewUser::PAGE_1)), new ViewUser('u2', array(ViewUser::PAGE_2)))));
+        $expected = 'HTTP/1.0 200 OK|<?xml version="1.0" encoding="UTF-8"?><root><status>200 OK</status><data><user1><username>u1</username><roles>PAGE_1</roles></user1><user2><username>u2</username><roles>PAGE_2</roles></user2></data></root>';
+        $this->exerciseGetUsersAndVerify($expected);
+    }
+
 
     /**
      * method getUsers

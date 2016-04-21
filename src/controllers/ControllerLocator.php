@@ -13,18 +13,18 @@ require_once __DIR__ . "/../helpers/XMLParser.php";
 
 class ControllerLocator
 {
-    public function getInstance($handle, $contentNegotiation, $vars)
+    public function getInstance($handle, $contentNegotiation, $vars, $loginService = null, $userService = null)
     {
         switch($handle) {
-            case "UserController": return new UserController();
+            case "UserController": return new UserController($loginService);
             case "ApiRestUserController":
                 switch($contentNegotiation) {
                     case "application/xml":
-                        return new ApiRestUserController($vars, null, null, new XMLParser());
+                        return new ApiRestUserController($vars, $loginService, $userService, new XMLParser());
                     case "application/json":
-                        return new ApiRestUserController($vars, null, null, new JSONParser());
+                        return new ApiRestUserController($vars, $loginService, $userService, new JSONParser());
                     default:
-                        return new ApiRestUserController($vars, null, null, new JSONParser());
+                        return new ApiRestUserController($vars, $loginService, $userService, new JSONParser());
 
                 }
         }

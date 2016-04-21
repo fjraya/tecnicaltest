@@ -7,6 +7,7 @@
  */
 require_once __DIR__ . "/ILoginService.php";
 require_once __DIR__ . "/../dal/UserQueryDAO.php";
+require_once __DIR__ . "/../dal/SQLiteConstant.php";
 require_once __DIR__ ."/../helpers/SessionWrapper.php";
 class LoginService implements ILoginService
 {
@@ -15,7 +16,7 @@ class LoginService implements ILoginService
 
     public function __construct(IUserQueryDAO $userQueryDAO = null, ISessionWrapper $sessionWrapper = null)
     {
-        if (!$userQueryDAO) $this->userQueryDAO = new UserQueryDAO("./db/project.sqlite");
+        if (!$userQueryDAO) $this->userQueryDAO = new UserQueryDAO(SQLiteConstant::SQLITE_RESOURCE);
         else $this->userQueryDAO = $userQueryDAO;
 
         if (!$sessionWrapper) $this->sessionWrapper = new SessionWrapper();

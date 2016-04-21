@@ -25,7 +25,7 @@ class UserCommandDAO extends BaseDAO implements ICommandDAO
 
     public function update($model)
     {
-        $sql = 'UPDATE Users set username=:username,password=:password,roles=:rol';
+        $sql = 'UPDATE Users set password=:password,roles=:rol where username=:username';
         return $this->doCommand($sql, $model);
 
     }

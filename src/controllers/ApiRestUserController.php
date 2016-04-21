@@ -7,6 +7,7 @@
  */
 
 require_once __DIR__ . "/../../src/services/UserService.php";
+require_once __DIR__ . "/../../src/helpers/NullSessionWrapper.php";
 require_once __DIR__ . "/../../src/helpers/JSONParser.php";
 class ApiRestUserController
 {
@@ -14,13 +15,13 @@ class ApiRestUserController
     private $loginService;
     private $userService;
     private $user;
-    private $vars;
-    private $parser;
+    protected $vars;
+    protected $parser;
 
 
     public function __construct($vars, ILoginService $loginService = null, IUserService $userService = null, IParser $parser = null)
     {
-        if (!$loginService) $this->loginService = new LoginService();
+        if (!$loginService) $this->loginService = new LoginService(null, new NullSessionWrapper());
         else $this->loginService = $loginService;
 
         if (!$userService) $this->userService = new UserService();
@@ -74,6 +75,7 @@ class ApiRestUserController
     {
         $result = array('status' => '201 Created', 'message' => 'usuario modificado correctamente');
         $header = "HTTP/1.0 201 Created";
+
         try {
             $this->userService->updateUser($this->user, $this->vars['username'], $this->vars['password'], $this->vars['roles']);
         } catch (Exception $e) {
@@ -103,18 +105,19 @@ class ApiRestUserController
      */
     private function doLogin($vars)
     {
+        
         $username = $vars['auth_username'];
         $password = $vars['auth_password'];
         try {
             $user = $this->loginService->login($username, $password);
             return $user;
         } catch (DomainException $e) {
-            $message = "login incorrecto";
-            $this->forbiddenMessage($message);
+            $message = array('status'=>'403 Forbidden', 'message' => "login incorrecto");
+            $this->response('HTTP/1.0 403 Forbidden',$message);
         }
         catch (InvalidArgumentException $e) {
-            $message = "Se requiere un user y un password";
-            $this->forbiddenMessage($message);
+            $message = array('status'=>'403 Forbidden', 'message' => "se requiere un user y un password");
+            $this->response('HTTP/1.0 403 Forbidden',$message);
         }
     }
 
@@ -122,8 +125,14 @@ class ApiRestUserController
     protected function response($head, $message)
     {
         header($head);
+        header("Content-Type: application/".$this->parser->getName());
         echo $this->parser->parse($message);
         die();
+    }
+
+    public function getName()
+    {
+        return "apiRest|".$this->parser->getName();
     }
 
 

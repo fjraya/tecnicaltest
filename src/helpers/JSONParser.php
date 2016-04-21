@@ -10,6 +10,12 @@ require_once __DIR__ . "/IParser.php";
 class JSONParser implements IParser
 {
 
+    public function getName()
+    {
+        return "json";
+    }
+
+
     public function parse(array $items = null)
     {
         if (empty($items)) return "[]";
